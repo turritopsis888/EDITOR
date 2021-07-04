@@ -1,0 +1,9 @@
+canvas {
+  border: 1px solid gray;
+  margin-top: 10px;
+}
+
+#toolBar {
+  display: flex;
+  gap: 15px;
+}
