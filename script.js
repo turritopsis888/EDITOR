@@ -1,8 +1,6 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
-
-
 const updateSizes = () => {
     canvas.width = innerWidth - 30;
     canvas.height = innerHeight - 150;
@@ -10,6 +8,14 @@ const updateSizes = () => {
 }
 
 updateSizes();
+
+// function copy() {
+
+//  const imgData = ctx.getImageData(innerWidth - 30, innerHeight - 150, canvas.width, canvas.height);
+//  ctx.putImageData(imgData, canvas.width, canvas.height);
+// }
+
+// copy();
 
 window.onresize = updateSizes;
 
@@ -20,18 +26,17 @@ const drawLine = (x1, y1, x2, y2) => {
     ctx.lineTo(x2, y2);
     ctx.stroke();
     drawCircle(x2, y2, ctx.lineWidth / 2)
-} 
+}
 
 let xLast, yLast, mouseDown;
 
- 
 canvas.onmousemove = e => {
     if ((xLast || yLast) && mouseDown) {
         drawLine(xLast, yLast, e.layerX, e.layerY)
     }
     xLast = e.layerX;
     yLast = e.layerY;
-} 
+}
 
 canvas.onmousedown = () => mouseDown = true;
 canvas.onmouseup = () => mouseDown = false;
@@ -61,7 +66,7 @@ const buildPalette = (rows, columns, width, height) => {
         }
         html += '</tr>'
     }
-    
+
     palette.innerHTML = html;
 
     palette.style.width = width + 'px';
@@ -73,7 +78,6 @@ buildPalette(4, 32, innerWidth - 250, 100);
 const setColor = color => {
     ctx.fillStyle = color;
     ctx.strokeStyle = color;
-} 
+}
 
 palette.onclick = e => setColor(e.target.style.background);
-
