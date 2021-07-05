@@ -2,20 +2,14 @@ const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d');
 
 const updateSizes = () => {
+    const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     canvas.width = innerWidth - 30;
     canvas.height = innerHeight - 150;
     palette.style.width = innerWidth - 250;
+    ctx.putImageData(imgData, 0, 0);
 }
 
 updateSizes();
-
-// function copy() {
-
-//  const imgData = ctx.getImageData(innerWidth - 30, innerHeight - 150, canvas.width, canvas.height);
-//  ctx.putImageData(imgData, canvas.width, canvas.height);
-// }
-
-// copy();
 
 window.onresize = updateSizes;
 
@@ -28,18 +22,35 @@ const drawLine = (x1, y1, x2, y2) => {
     drawCircle(x2, y2, ctx.lineWidth / 2)
 }
 
-let xLast, yLast, mouseDown;
+const eraseLine = (x1, y1, x2, y2) => {
+    ctx.globalCompositeOperation = 'destination-out';
+    drawLine(x1, y1, x2, y2);
+    ctx.globalCompositeOperation = 'source-over';
+}
+let xLast, yLast, drawing, erasing;
 
 canvas.onmousemove = e => {
-    if ((xLast || yLast) && mouseDown) {
-        drawLine(xLast, yLast, e.layerX, e.layerY)
+    if (xLast || yLast) {
+        if (drawing) {
+            drawLine(xLast, yLast, e.layerX, e.layerY);
+        } else if (erasing) {
+            eraseLine(xLast, yLast, e.layerX, e.layerY);
+        } 
     }
     xLast = e.layerX;
     yLast = e.layerY;
 }
 
-canvas.onmousedown = () => mouseDown = true;
-canvas.onmouseup = () => mouseDown = false;
+canvas.onmousedown = e => {
+    if (e.button === 0) {
+        drawing = true;
+    } else if (e.button === 2) {
+        erasing = true;
+    } 
+};
+canvas.onmouseup = canvas.onmouseleave = () => drawing = erasing = false;
+
+canvas.oncontextmenu = e => e.preventDefault();
 
 const clearCanvas = () => ctx.clearRect(0, 0, canvas.width, canvas.height);
 

@@ -1,6 +1,7 @@
 canvas {
   border: 1px solid gray;
   margin-top: 10px;
+  background-color: white;
 }
 
 #toolBar {
